@@ -1,0 +1,25 @@
+# Ignore all .env files across the entire project
+*.env
+**/.env
+
+# IDEs and editors
+.idea/
+.vscode/
+
+# Java build
+target/
+*.jar
+
+# Node/React apps
+node_modules/
+build/
+
+# Logs
+*.log
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Docker volumes (if any are local)
+volumes/

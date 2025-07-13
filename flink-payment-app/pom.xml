@@ -1,0 +1,133 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" 
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 
+                             http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>com.example</groupId>
+  <artifactId>flink-payment-app</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+
+  <properties>
+  <flink.version>1.18.1</flink.version>
+  <flink.kafka.version>3.0.1-1.18</flink.kafka.version>
+  <java.version>17</java.version>
+</properties>
+
+
+  <repositories>
+    <repository>
+        <id>apache-flink</id>
+        <name>Apache Flink</name>
+        <url>https://repository.apache.org/content/repositories/releases/</url>
+    </repository>
+</repositories>
+
+
+  <dependencies>
+    <!-- Core Flink streaming -->
+    <dependency>
+      <groupId>org.apache.flink</groupId>
+      <artifactId>flink-streaming-java</artifactId>
+      <version>${flink.version}</version>
+    </dependency>
+
+    <!-- Flink Kafka connector -->
+    <dependency>
+      <groupId>org.apache.flink</groupId>
+      <artifactId>flink-connector-kafka</artifactId>
+      <version>${flink.kafka.version}</version>
+    </dependency>
+
+    <!-- JSON parsing -->
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
+      <version>2.17.1</version>
+    </dependency>
+
+    <dependency>
+  <groupId>com.stripe</groupId>
+  <artifactId>stripe-java</artifactId>
+  <version>24.9.0</version> <!-- or latest -->
+</dependency>
+
+<dependency>
+  <groupId>io.github.cdimascio</groupId>
+  <artifactId>java-dotenv</artifactId>
+  <version>5.2.2</version>
+</dependency>
+
+    <!-- HTTP client (for calling Stripe or Spring Boot) -->
+    <dependency>
+      <groupId>org.apache.httpcomponents.client5</groupId>
+      <artifactId>httpclient5</artifactId>
+      <version>5.3</version>
+    </dependency>
+
+    <dependency>
+  <groupId>org.apache.flink</groupId>
+  <artifactId>flink-clients</artifactId>
+  <version>${flink.version}</version>
+</dependency>
+
+  </dependencies>
+
+  <build>
+    <plugins>
+      <!-- Java compiler -->
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.10.1</version>
+        <configuration>
+          <source>${java.version}</source>
+          <target>${java.version}</target>
+        </configuration>
+      </plugin>
+
+      <!-- Build fat jar -->
+      <plugin>
+  <groupId>org.apache.maven.plugins</groupId>
+  <artifactId>maven-shade-plugin</artifactId>
+  <version>3.5.0</version>
+  <executions>
+    <execution>
+      <phase>package</phase>
+      <goals>
+        <goal>shade</goal>
+      </goals>
+      <configuration>
+        <shadedArtifactAttached>false</shadedArtifactAttached>
+        <shadedArtifactId>${project.artifactId}</shadedArtifactId>
+        <createDependencyReducedPom>false</createDependencyReducedPom>
+        <finalName>flink-payment-app-fat</finalName>
+      </configuration>
+    </execution>
+  </executions>
+</plugin>
+
+
+      <plugin>
+  <groupId>org.apache.maven.plugins</groupId>
+  <artifactId>maven-shade-plugin</artifactId>
+  <version>3.5.0</version>
+  <executions>
+    <execution>
+      <phase>package</phase>
+      <goals>
+        <goal>shade</goal>
+      </goals>
+      <configuration>
+        <transformers>
+          <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+            <mainClass>com.example.flink_payment_app.FlinkPaymentAppApplication</mainClass>
+          </transformer>
+        </transformers>
+      </configuration>
+    </execution>
+  </executions>
+</plugin>
+
+    </plugins>
+  </build>
+</project>
