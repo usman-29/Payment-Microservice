@@ -3,7 +3,6 @@ package com.example.paymentservice.controller;
 import com.example.paymentservice.dto.PaymentRequestDto;
 import com.example.paymentservice.dto.StripeWebhookDto;
 import com.example.paymentservice.service.PaymentService;
-import com.example.paymentservice.service.StripeService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,18 +16,10 @@ public class PaymentController {
     @Autowired
     private PaymentService paymentService;
 
-    @Autowired
-    private StripeService stripeService;
-
     @PostMapping("/initiate")
     public ResponseEntity<String> initiatePayment(@RequestBody PaymentRequestDto requestDTO) {
         try {
-            // Step 1: Create pending payment record in DB
             String idempotencyKey = paymentService.createPendingPayment(requestDTO);
-
-            // Step 2: Call Stripe using the same idempotency key
-            stripeService.createPaymentIntent(requestDTO.getAmount(), idempotencyKey);
-
             return ResponseEntity.ok(idempotencyKey); // Return the key for client-side storage
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
