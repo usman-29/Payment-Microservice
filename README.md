@@ -14,19 +14,6 @@ This project is a complete **event-driven payment microservice architecture** in
 
 ![Screenshot 2025-07-13 235247](https://github.com/user-attachments/assets/40ceca14-20bc-4af3-8bae-361ce6d1f130)
 
-```mermaid
-graph TD
-    A[Client] -->|1. Initiate Payment| B[Spring Boot Payment Service]
-    B -->|2. Create Pending Payment| C[(PostgreSQL Master DB)]
-    C -->|3. CDC via Debezium| D[Kafka Topic]
-    D -->|4. Consume Events| E[Flink Job]
-    E -->|5. Poll Stripe API for pending| F[Stripe]
-    F -->|6. Webhook Payment Status| B
-    E -->|7. Update DB or Kafka| B
-    C -->|8. Replicates| C1[(Replica DB 1)]
-    C -->|8. Replicates| C2[(Replica DB 2)]
-```
-
 ---
 
 ## 🧠 Key Concepts
